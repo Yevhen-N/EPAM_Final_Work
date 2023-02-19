@@ -27,21 +27,23 @@ CREATE TABLE cards
     number     VARCHAR(16) UNIQUE NOT NULL
 );
 
+CREATE TYPE payment_status AS ENUM ('prepared', 'sent')
 CREATE TABLE payments
 (
     id         serial PRIMARY KEY,
     account_id INTEGER REFERENCES accounts (id) ON DELETE CASCADE,
-    date       TIMESTAMP NOT NULL DEFAULT NOW(),
-    sum        INTEGER   NOT NULL,
-    confirm    BOOLEAN            DEFAULT FALSE
+    date       TIMESTAMP      NOT NULL DEFAULT NOW(),
+    sum        INTEGER        NOT NULL,
+    status     payment_status NOT NULL
 );
 
+CREATE TYPE request_status AS ENUM ('new', 'approved')
 CREATE TABLE requests
 (
     id         serial PRIMARY KEY,
     account_id INTEGER REFERENCES accounts (id) ON DELETE CASCADE,
-    date       TIMESTAMP   NOT NULL DEFAULT NOW(),
-    status     VARCHAR(10) NOT NULL
+    date       TIMESTAMP NOT NULL DEFAULT NOW(),
+    status     request_status     DEFAULT 'new'
 );
 
 CREATE TABLE log
