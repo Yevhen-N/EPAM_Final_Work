@@ -10,10 +10,10 @@ import (
 )
 
 type PaymentsPostgresRepository struct {
-	db bun.DB
+	db bun.IDB
 }
 
-func NewPaymentsPostgresRepository(db bun.DB) *PaymentsPostgresRepository {
+func NewPaymentsPostgresRepository(db bun.IDB) *PaymentsPostgresRepository {
 	return &PaymentsPostgresRepository{db: db}
 }
 
@@ -25,7 +25,6 @@ func (r *PaymentsPostgresRepository) Create(ctx context.Context, row *model.Paym
 	if err != nil {
 		return fmt.Errorf("repo create payment: %w", err)
 	}
-
 	return nil
 }
 
@@ -39,20 +38,18 @@ func (r *PaymentsPostgresRepository) Get(ctx context.Context, id int64) (*model.
 	if err != nil {
 		return nil, fmt.Errorf("repo get payment: %w", err)
 	}
-
 	return row, nil
 }
 
-func (r *PaymentsPostgresRepository) Update(ctx context.Context, row *model.Payment) error {
+func (r *PaymentsPostgresRepository) UpdateStatus(ctx context.Context, row *model.Payment) error {
 	_, err := r.db.NewUpdate().
 		Model(row).
-		Column("confirm").
+		Column("status").
 		OmitZero().
 		WherePK().
 		Exec(ctx, row)
 	if err != nil {
 		return fmt.Errorf("repo update payment: %w", err)
 	}
-
 	return nil
 }

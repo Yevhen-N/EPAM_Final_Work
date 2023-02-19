@@ -10,10 +10,10 @@ import (
 )
 
 type AccountPostgresRepository struct {
-	db bun.DB
+	db bun.IDB
 }
 
-func NewAccountPostgresRepository(db bun.DB) *AccountPostgresRepository {
+func NewAccountPostgresRepository(db bun.IDB) *AccountPostgresRepository {
 	return &AccountPostgresRepository{db: db}
 }
 
@@ -25,7 +25,6 @@ func (r *AccountPostgresRepository) Create(ctx context.Context, row *model.Accou
 	if err != nil {
 		return fmt.Errorf("repo create account: %w", err)
 	}
-
 	return nil
 }
 
@@ -37,12 +36,11 @@ func (r *AccountPostgresRepository) Get(ctx context.Context, id int64) (*model.A
 		Relation("Cards").
 		Relation("Payments").
 		Relation("Requests").
-		Where("id=?", id).
+		Where("a.id=?", id).
 		Scan(ctx, row)
 	if err != nil {
 		return nil, fmt.Errorf("repo get account: %w", err)
 	}
-
 	return row, nil
 }
 
@@ -59,7 +57,6 @@ func (r *AccountPostgresRepository) List(ctx context.Context, userID int64) ([]m
 	if err != nil {
 		return nil, fmt.Errorf("repo list accounts: %w", err)
 	}
-
 	return rows, nil
 }
 
@@ -68,12 +65,12 @@ func (r *AccountPostgresRepository) Update(ctx context.Context, row *model.Accou
 		Model(row).
 		Column("balance").
 		Column("lock").
+		Where("user_id=?", row).
 		OmitZero().
 		WherePK().
 		Exec(ctx, row)
 	if err != nil {
 		return fmt.Errorf("repo update account: %w", err)
 	}
-
 	return nil
 }

@@ -10,10 +10,10 @@ import (
 )
 
 type CardPostgresRepository struct {
-	db bun.DB
+	db bun.IDB
 }
 
-func NewCardPostgresRepository(db bun.DB) *CardPostgresRepository {
+func NewCardPostgresRepository(db bun.IDB) *CardPostgresRepository {
 	return &CardPostgresRepository{db: db}
 }
 
@@ -25,7 +25,6 @@ func (r *CardPostgresRepository) Create(ctx context.Context, row *model.Card) er
 	if err != nil {
 		return fmt.Errorf("repo create card: %w", err)
 	}
-
 	return nil
 }
 
@@ -39,7 +38,6 @@ func (r *CardPostgresRepository) Get(ctx context.Context, id int64) (*model.Card
 	if err != nil {
 		return nil, fmt.Errorf("repo get card: %w", err)
 	}
-
 	return row, nil
 }
 
@@ -53,7 +51,6 @@ func (r *CardPostgresRepository) List(ctx context.Context, accountID int64) ([]m
 	if err != nil {
 		return nil, fmt.Errorf("repo list card: %w", err)
 	}
-
 	return rows, nil
 }
 
@@ -66,6 +63,5 @@ func (r *CardPostgresRepository) Update(ctx context.Context, row *model.Card) er
 	if err != nil {
 		return fmt.Errorf("repo update card: %w", err)
 	}
-
 	return nil
 }

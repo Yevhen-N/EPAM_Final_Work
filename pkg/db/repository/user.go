@@ -10,10 +10,10 @@ import (
 )
 
 type UserPostgresRepository struct {
-	db bun.DB
+	db bun.IDB
 }
 
-func NewUserPostgresRepository(db bun.DB) *UserPostgresRepository {
+func NewUserPostgresRepository(db bun.IDB) *UserPostgresRepository {
 	return &UserPostgresRepository{db: db}
 }
 
@@ -25,7 +25,6 @@ func (r *UserPostgresRepository) Create(ctx context.Context, row *model.User) er
 	if err != nil {
 		return fmt.Errorf("repo create user: %w", err)
 	}
-
 	return nil
 }
 
@@ -38,12 +37,11 @@ func (r *UserPostgresRepository) Get(ctx context.Context, id int64) (*model.User
 		Relation("Accounts.Payments").
 		Relation("Account.Requests").
 		Relation("Logs").
-		Where("id = ?", id).
+		Where("u.id = ?", id).
 		Scan(ctx, row)
 	if err != nil {
 		return nil, fmt.Errorf("repo get user: %w", err)
 	}
-
 	return row, nil
 }
 
@@ -56,6 +54,5 @@ func (r *UserPostgresRepository) Update(ctx context.Context, row *model.User) er
 	if err != nil {
 		return fmt.Errorf("repo update user: %w", err)
 	}
-
 	return nil
 }

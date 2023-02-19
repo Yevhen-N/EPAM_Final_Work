@@ -10,10 +10,10 @@ import (
 )
 
 type LogPostgresRepository struct {
-	db bun.DB
+	db bun.IDB
 }
 
-func NewLogPostgresRepository(db bun.DB) *LogPostgresRepository {
+func NewLogPostgresRepository(db bun.IDB) *LogPostgresRepository {
 	return &LogPostgresRepository{db: db}
 }
 
@@ -25,7 +25,6 @@ func (r *LogPostgresRepository) Create(ctx context.Context, row *model.Log) erro
 	if err != nil {
 		return fmt.Errorf("repo create log: %w", err)
 	}
-
 	return nil
 }
 
@@ -38,6 +37,5 @@ func (r *LogPostgresRepository) ListByUserID(ctx context.Context, userID int64) 
 	if err != nil {
 		return nil, fmt.Errorf("repo get log: %w", err)
 	}
-
 	return rows, nil
 }

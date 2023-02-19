@@ -10,7 +10,7 @@ type Card struct {
 	bun.BaseModel `bun:"table:cards,alias:c"`
 
 	ID        int64  `bun:"id"`
-	AccountID string `bun:"account_id"`
+	AccountID int64  `bun:"account_id"`
 	Number    string `bun:"number"`
 
 	Account *Account `bun:"rel:belongs-to,join:account_id=id"`

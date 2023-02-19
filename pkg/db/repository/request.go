@@ -10,10 +10,10 @@ import (
 )
 
 type RequestPostgresRepository struct {
-	db bun.DB
+	db bun.IDB
 }
 
-func NewRequestPostgresRepository(db bun.DB) *RequestPostgresRepository {
+func NewRequestPostgresRepository(db bun.IDB) *RequestPostgresRepository {
 	return &RequestPostgresRepository{db: db}
 }
 
@@ -25,7 +25,6 @@ func (r *RequestPostgresRepository) Create(ctx context.Context, row *model.Reque
 	if err != nil {
 		return fmt.Errorf("repo create request: %w", err)
 	}
-
 	return nil
 }
 
@@ -40,19 +39,18 @@ func (r *RequestPostgresRepository) Get(ctx context.Context, id int64) (*model.R
 	if err != nil {
 		return nil, fmt.Errorf("repo get request: %w", err)
 	}
-
 	return row, nil
 }
 
-func (r *RequestPostgresRepository) Update(ctx context.Context, row *model.Request) error {
+func (r *RequestPostgresRepository) UpdateStatus(ctx context.Context, row *model.Request) error {
 	_, err := r.db.NewUpdate().
 		Model(row).
+		Column("status").
 		OmitZero().
 		WherePK().
 		Exec(ctx, row)
 	if err != nil {
 		return fmt.Errorf("repo update request: %w", err)
 	}
-
 	return nil
 }
