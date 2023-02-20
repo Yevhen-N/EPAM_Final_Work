@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/uptrace/bun"
-
 	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/model"
+
+	"github.com/uptrace/bun"
 )
 
 type AccountPostgresRepository struct {

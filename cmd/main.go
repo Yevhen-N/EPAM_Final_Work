@@ -45,7 +45,7 @@ func main() {
 		log.Fatalf("creat app failed %s", err)
 	}
 
-	if err := a.Run(ctx); err != nil {
+	if err := a.Run(ctx, port); err != nil {
 		log.Fatalf("run app failed %s", err)
 	}
 }

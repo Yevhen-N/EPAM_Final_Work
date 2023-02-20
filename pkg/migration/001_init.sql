@@ -9,13 +9,14 @@ CREATE TABLE users
 
 );
 
+CREATE TYPE currency_type AS ENUM ('usd', 'uah', 'eur')
 CREATE TABLE accounts
 (
     id       serial PRIMARY KEY,
     user_id  INTEGER REFERENCES users (id) ON DELETE CASCADE,
     number   VARCHAR(50) UNIQUE NOT NULL,
     balance  INTEGER            NOT NULL,
-    currency VARCHAR(3)         NOT NULL,
+    currency currency_type      NOT NULL,
     lock     BOOLEAN DEFAULT FALSE
 
 );

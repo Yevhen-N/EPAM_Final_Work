@@ -27,5 +27,6 @@ type Payment struct {
 type PaymentsRepository interface {
 	Create(ctx context.Context, p *Payment) error
 	Get(ctx context.Context, id int64) (*Payment, error)
+	List(ctx context.Context, accountID int64) ([]Payment, error)
 	UpdateStatus(ctx context.Context, p *Payment) error
 }

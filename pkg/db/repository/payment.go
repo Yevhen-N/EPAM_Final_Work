@@ -41,6 +41,19 @@ func (r *PaymentsPostgresRepository) Get(ctx context.Context, id int64) (*model.
 	return row, nil
 }
 
+func (r *PaymentsPostgresRepository) List(ctx context.Context, accountID int64) ([]model.Payment, error) {
+	rows := []model.Payment{}
+	err := r.db.NewSelect().
+		Model(rows).
+		Relation("Account").
+		Where("accout_id=?", accountID).
+		Scan(ctx, rows)
+	if err != nil {
+		return nil, fmt.Errorf("repo list payment: %w", err)
+	}
+	return rows, nil
+}
+
 func (r *PaymentsPostgresRepository) UpdateStatus(ctx context.Context, row *model.Payment) error {
 	_, err := r.db.NewUpdate().
 		Model(row).

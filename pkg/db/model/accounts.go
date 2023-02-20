@@ -6,6 +6,12 @@ import (
 	"github.com/uptrace/bun"
 )
 
+const (
+	PaymentCurrentUSD = "usd"
+	PaymentCurrentUAH = "uah"
+	PaymentCurrentEUR = "eur"
+)
+
 type Account struct {
 	bun.BaseModel `bun:"table:accounts,alias:a"`
 
