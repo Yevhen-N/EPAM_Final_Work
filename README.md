@@ -1,9 +1,9 @@
-#Final Task
-##Система "Платежі"
-###Used:
+# Final Task
+## Система "Платежі"
+### Used:
 - server: github.com/labstack/echo
 - orm: github.com/uptrace/bun
-###Done:
+### Done:
 - Domen-driven Design
 - BUN
 - postgreSQL
@@ -11,7 +11,7 @@
 - documentation
 - error handling
 - graceful shutdown
-###To be Done:
+### To be Done:
 - logs
 - testing
 - transactions
