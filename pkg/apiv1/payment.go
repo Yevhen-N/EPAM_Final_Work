@@ -30,10 +30,11 @@ func (p *PaymentRequest) Validate() error {
 	if p.Sum == 0 {
 		return fmt.Errorf("payment sum must not be 0")
 	}
-	if p.Status != model.PaymentStatusSent {
-		if p.Status != model.PaymentStatusPrepared {
-			return fmt.Errorf("payment status must be prepared or sent")
-		}
+	switch p.Status {
+	case model.PaymentStatusPrepared, model.PaymentStatusSent:
+		// nothing to do
+	default:
+		return fmt.Errorf("unsupported status: %s", p.Status)
 	}
 	return nil
 }

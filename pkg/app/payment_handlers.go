@@ -26,8 +26,8 @@ func (a *App) CreatePaymentHandler(c echo.Context) error {
 		return fmt.Errorf("account is not found %w", err)
 	}
 
-	if account.Lock {
-		return fmt.Errorf("account already locked")
+	if account.Status == model.AccountStatusBlocked {
+		return fmt.Errorf("account already blocked")
 	}
 
 	if account.Balance <= 0 {

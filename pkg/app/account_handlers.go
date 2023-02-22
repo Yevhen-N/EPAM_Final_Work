@@ -70,7 +70,7 @@ func mapAccount(row *model.Account) *apiv1.AccountResponse {
 		Number:   row.Number,
 		Balance:  row.Balance,
 		Currency: row.Currency,
-		Lock:     row.Lock,
+		Status:   row.Status,
 	}
 
 	res.Cards = make([]apiv1.CardResponse, 0, len(row.Cards))

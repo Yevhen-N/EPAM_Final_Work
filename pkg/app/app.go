@@ -46,7 +46,7 @@ func New(dbConn bun.IDB) (*App, error) {
 	v1 := app.srv.Group("v1")
 
 	v1.GET("/users/:id", app.GetUserHandler)
-	v1.PUT("/users/lock", app.UserLockHandler)
+	v1.PUT("/users/lock", app.UserRoleHandler)
 
 	v1.POST("/accounts", app.CreateAccountHandler)
 	v1.GET("/users/:id/accounts", app.ListAccountHandler)

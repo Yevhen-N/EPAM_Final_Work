@@ -28,8 +28,8 @@ func (a *App) GetUserHandler(c echo.Context) error {
 	return nil
 }
 
-func (a *App) UserLockHandler(c echo.Context) error {
-	req := &apiv1.UserLockRequest{}
+func (a *App) UserRoleHandler(c echo.Context) error {
+	req := &apiv1.UserRoleRequest{}
 	if err := c.Bind(req); err != nil {
 		return fmt.Errorf("bind user request: %w", err)
 	}
@@ -39,8 +39,8 @@ func (a *App) UserLockHandler(c echo.Context) error {
 	}
 
 	row := &model.User{
-		ID:   req.ID,
-		Lock: req.Lock,
+		ID:     req.ID,
+		Status: req.Status,
 	}
 
 	err := a.userPostgresRepository.Update(c.Request().Context(), row)
@@ -60,8 +60,8 @@ func mapUser(row *model.User) *apiv1.UserResponse {
 		FullName: row.FullName,
 		Email:    row.Email,
 		Password: row.Password,
-		Lock:     row.Lock,
-		Admin:    row.Admin,
+		Status:   row.Status,
+		Role:     row.Role,
 	}
 
 	res.Accounts = make([]apiv1.AccountResponse, 0, len(row.Accounts))
@@ -72,7 +72,7 @@ func mapUser(row *model.User) *apiv1.UserResponse {
 			Number:   account.Number,
 			Balance:  account.Balance,
 			Currency: account.Currency,
-			Lock:     account.Lock,
+			Status:   account.Status,
 		})
 	}
 

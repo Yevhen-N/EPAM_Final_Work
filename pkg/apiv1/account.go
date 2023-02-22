@@ -12,7 +12,7 @@ type AccountResponse struct {
 	Number   string `json:"number"`
 	Balance  int64  `json:"balance"`
 	Currency string `json:"currency"`
-	Lock     bool   `json:"lock"`
+	Status   string `json:"status"`
 
 	Cards    []CardResponse    `json:"cards"`
 	Payments []PaymentResponse `json:"payments"`
@@ -21,7 +21,7 @@ type AccountResponse struct {
 
 type AccountRequest struct {
 	UserID   int64  `json:"user_id"`
-	Currency string `json:"currency" enum:"usd, uah, eur"`
+	Currency string `json:"currency" enum:"USD, UAH, EUR"`
 }
 
 func (a *AccountRequest) Validate() error {
@@ -29,7 +29,7 @@ func (a *AccountRequest) Validate() error {
 		return fmt.Errorf("empty user id")
 	}
 	switch a.Currency {
-	case model.PaymentCurrentUSD, model.PaymentCurrentUAH, model.PaymentCurrentEUR:
+	case model.AccountCurrencyUSD, model.AccountCurrencyUAH, model.AccountCurrencyEUR:
 		// nothing to do
 	default:
 		return fmt.Errorf("unsupported currency: %s", a.Currency)

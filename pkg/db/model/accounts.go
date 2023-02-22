@@ -7,9 +7,11 @@ import (
 )
 
 const (
-	PaymentCurrentUSD = "usd"
-	PaymentCurrentUAH = "uah"
-	PaymentCurrentEUR = "eur"
+	AccountStatusActive  = "active"
+	AccountStatusBlocked = "blocked"
+	AccountCurrencyUSD   = "USD"
+	AccountCurrencyUAH   = "UAH"
+	AccountCurrencyEUR   = "EUR"
 )
 
 type Account struct {
@@ -20,7 +22,7 @@ type Account struct {
 	Number   string `bun:"number"`
 	Balance  int64  `bun:"balance"`
 	Currency string `bun:"currency"`
-	Lock     bool   `bun:"lock"`
+	Status   string `bun:"status"`
 
 	Cards    []Card    `bun:"has-many,join:id=account_id"`
 	Payments []Payment `bun:"has-many,join:id=account_id"`

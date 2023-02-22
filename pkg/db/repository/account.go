@@ -64,7 +64,7 @@ func (r *AccountPostgresRepository) Update(ctx context.Context, row *model.Accou
 	_, err := r.db.NewUpdate().
 		Model(row).
 		Column("balance").
-		Column("lock").
+		Column("status").
 		Where("user_id=?", row).
 		OmitZero().
 		WherePK().

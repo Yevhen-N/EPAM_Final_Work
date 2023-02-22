@@ -24,10 +24,11 @@ func (r *RequestLockRequest) Validate() error {
 	if r.ID == 0 {
 		return fmt.Errorf("id must not be empty")
 	}
-	if r.Status != model.RequestStatusNew {
-		if r.Status != model.RequestStatusApproved {
-			return fmt.Errorf("payment status must be new or approved")
-		}
+	switch r.Status {
+	case model.RequestStatusNew, model.RequestStatusApproved:
+	// nothing to do
+	default:
+		return fmt.Errorf("unsupported status: %s", r.Status)
 	}
 	return nil
 }

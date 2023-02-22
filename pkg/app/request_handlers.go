@@ -57,8 +57,8 @@ func (a *App) RequestApprovedHandler(c echo.Context) error {
 		return fmt.Errorf("status update: %w", err)
 	}
 	account := &model.Account{
-		ID:   req.AccountID,
-		Lock: false,
+		ID:     req.AccountID,
+		Status: model.AccountStatusActive,
 	}
 	err = a.accountPostgresRepository.Update(c.Request().Context(), account)
 	if err != nil {

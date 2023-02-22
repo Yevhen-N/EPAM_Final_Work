@@ -6,6 +6,13 @@ import (
 	"github.com/uptrace/bun"
 )
 
+const (
+	UserStatusActive  = "active"
+	UserStatusBlocked = "blocked"
+	UserRoleAdmin     = "admin"
+	UserRoleUser      = "user"
+)
+
 type User struct {
 	bun.BaseModel `bun:"table:users,alias:u"`
 
@@ -13,8 +20,8 @@ type User struct {
 	FullName string `bun:"full_name"`
 	Email    string `bun:"email"`
 	Password string `bun:"password"`
-	Lock     bool   `bun:"lock"`
-	Admin    bool   `bun:"admin"`
+	Status   string `bun:"status"`
+	Role     string `bun:"role"`
 
 	Accounts []Account `bun:"rel:has-many,join:id=user_id"`
 	Logs     []Log     `bun:"rel:has-many,join:id=user_id"`

@@ -35,7 +35,7 @@ func (r *UserPostgresRepository) Get(ctx context.Context, id int64) (*model.User
 		Relation("Accounts").
 		Relation("Accounts.Cards").
 		Relation("Accounts.Payments").
-		Relation("Account.Requests").
+		Relation("Accounts.Requests").
 		Relation("Logs").
 		Where("u.id = ?", id).
 		Scan(ctx, row)

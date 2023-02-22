@@ -1,27 +1,37 @@
 package apiv1
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/model"
+)
 
 type UserResponse struct {
 	ID       int64  `json:"id"`
 	FullName string `json:"full_name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	Lock     bool   `json:"lock"`
-	Admin    bool   `json:"admin"`
+	Status   string `json:"status"`
+	Role     string `json:"role"`
 
 	Accounts []AccountResponse `json:"accounts"`
 	Logs     []LogResponse     `json:"logs"`
 }
 
-type UserLockRequest struct {
-	ID   int64 `json:"id"`
-	Lock bool  `json:"lock"`
+type UserRoleRequest struct {
+	ID     int64  `json:"id"`
+	Status string `json:"status" enum:"active, blocked"`
 }
 
-func (u *UserLockRequest) Validate() error {
+func (u *UserRoleRequest) Validate() error {
 	if u.ID == 0 {
 		return fmt.Errorf("id must not be empty")
+	}
+	switch u.Status {
+	case model.UserStatusActive, model.UserStatusBlocked:
+		// nothing to do
+	default:
+		return fmt.Errorf("unsupported status: %s", u.Status)
 	}
 	return nil
 }
