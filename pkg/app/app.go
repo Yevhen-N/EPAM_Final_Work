@@ -41,10 +41,10 @@ func New(dbConn bun.IDB) (*App, error) {
 		logPostgresRepository:      logPostgresRepository,
 		srv:                        echo.New(),
 	}
-
 	// TODO use Middleware
 	v1 := app.srv.Group("v1")
 
+	v1.POST("/users", app.CreateUserHandler)
 	v1.GET("/users/:id", app.GetUserHandler)
 	v1.PUT("/users/lock", app.UserRoleHandler)
 
@@ -67,7 +67,7 @@ func New(dbConn bun.IDB) (*App, error) {
 func (a *App) Run(ctx context.Context, listenPort string) error {
 	errCh := make(chan error, 1)
 	go func() {
-		if err := a.srv.Start(listenPort); err != nil {
+		if err := a.srv.Start(":" + listenPort); err != nil {
 			errCh <- fmt.Errorf("echo start failed %w", err)
 		}
 	}()

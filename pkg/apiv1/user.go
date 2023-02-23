@@ -18,12 +18,12 @@ type UserResponse struct {
 	Logs     []LogResponse     `json:"logs"`
 }
 
-type UserRoleRequest struct {
+type UserStatusRequest struct {
 	ID     int64  `json:"id"`
 	Status string `json:"status" enum:"active, blocked"`
 }
 
-func (u *UserRoleRequest) Validate() error {
+func (u *UserStatusRequest) Validate() error {
 	if u.ID == 0 {
 		return fmt.Errorf("id must not be empty")
 	}

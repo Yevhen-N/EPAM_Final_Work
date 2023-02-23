@@ -33,8 +33,8 @@ func (r *CardPostgresRepository) Get(ctx context.Context, id int64) (*model.Card
 	err := r.db.NewSelect().
 		Model(row).
 		Relation("Account").
-		Where("id=?", id).
-		Scan(ctx, row)
+		Where("c.id=?", id).
+		Scan(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("repo get card: %w", err)
 	}
@@ -47,7 +47,7 @@ func (r *CardPostgresRepository) List(ctx context.Context, accountID int64) ([]m
 		Model(rows).
 		Relation("Account").
 		Where("account_id=?", accountID).
-		Scan(ctx, rows)
+		Scan(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("repo list card: %w", err)
 	}

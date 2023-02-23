@@ -9,7 +9,7 @@ import (
 type Card struct {
 	bun.BaseModel `bun:"table:cards,alias:c"`
 
-	ID        int64  `bun:"id"`
+	ID        int64  `bun:"id,pk,autoincrement"`
 	AccountID int64  `bun:"account_id"`
 	Number    string `bun:"number"`
 

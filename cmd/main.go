@@ -13,6 +13,8 @@ import (
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
 	"github.com/uptrace/bun/migrate"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -31,12 +33,12 @@ func main() {
 	ctx := context.Background()
 	err := migrator.Init(ctx)
 	if err != nil {
-		log.Fatal("migration init fail")
+		log.Fatalf("migration init fail: %s", err)
 	}
 
 	res, err := migrator.Migrate(ctx)
 	if err != nil {
-		log.Fatal("migration migrator fail")
+		log.Fatalf("migration migrator fail: %s", err)
 	}
 	log.Printf("migratoins done %s", res)
 

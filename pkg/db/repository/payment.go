@@ -34,7 +34,7 @@ func (r *PaymentsPostgresRepository) Get(ctx context.Context, id int64) (*model.
 		Model(row).
 		Relation("Account").
 		Where("p.id=?", id).
-		Scan(ctx, row)
+		Scan(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("repo get payment: %w", err)
 	}
@@ -46,8 +46,8 @@ func (r *PaymentsPostgresRepository) List(ctx context.Context, accountID int64) 
 	err := r.db.NewSelect().
 		Model(rows).
 		Relation("Account").
-		Where("accout_id=?", accountID).
-		Scan(ctx, rows)
+		Where("account_id=?", accountID).
+		Scan(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("repo list payment: %w", err)
 	}

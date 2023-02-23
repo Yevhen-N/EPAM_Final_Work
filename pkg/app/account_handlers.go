@@ -13,13 +13,13 @@ import (
 
 // CreateAccountHandler creates account for current user
 func (a *App) CreateAccountHandler(c echo.Context) error {
-	req := &apiv1.AccountRequest{}
-	if err := c.Bind(req); err != nil {
+	req := apiv1.AccountRequest{}
+	if err := c.Bind(&req); err != nil {
 		return fmt.Errorf("bind account request: %w", err)
 	}
 
 	if err := req.Validate(); err != nil {
-		return fmt.Errorf("account validate error %w", err)
+		return fmt.Errorf("account validate error: %w", err)
 	}
 
 	row := &model.Account{

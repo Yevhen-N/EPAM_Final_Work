@@ -15,7 +15,7 @@ const (
 type Request struct {
 	bun.BaseModel `bun:"table:requests,alias:r"`
 
-	ID        int64     `bum:"id"`
+	ID        int64     `bum:"id,pk,autoincrement"`
 	AccountID int64     `bum:"account_id"`
 	Date      time.Time `bum:"date"`
 	Status    string    `bum:"status"`

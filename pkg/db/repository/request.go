@@ -35,7 +35,7 @@ func (r *RequestPostgresRepository) Get(ctx context.Context, id int64) (*model.R
 		Relation("Account").
 		Relation("Account.User").
 		Where("r.id=?", id).
-		Scan(ctx, row)
+		Scan(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("repo get request: %w", err)
 	}

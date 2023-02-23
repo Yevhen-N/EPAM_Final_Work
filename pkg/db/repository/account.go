@@ -37,7 +37,7 @@ func (r *AccountPostgresRepository) Get(ctx context.Context, id int64) (*model.A
 		Relation("Payments").
 		Relation("Requests").
 		Where("a.id=?", id).
-		Scan(ctx, row)
+		Scan(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("repo get account: %w", err)
 	}
@@ -47,13 +47,13 @@ func (r *AccountPostgresRepository) Get(ctx context.Context, id int64) (*model.A
 func (r *AccountPostgresRepository) List(ctx context.Context, userID int64) ([]model.Account, error) {
 	rows := []model.Account{}
 	err := r.db.NewSelect().
-		Model(rows).
+		Model(&rows).
 		Relation("User").
 		Relation("Cards").
 		Relation("Payments").
 		Relation("Requests").
 		Where("user_id=?", userID).
-		Scan(ctx, rows)
+		Scan(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("repo list accounts: %w", err)
 	}

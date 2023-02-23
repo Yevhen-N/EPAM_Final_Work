@@ -17,16 +17,16 @@ const (
 type Account struct {
 	bun.BaseModel `bun:"table:accounts,alias:a"`
 
-	ID       int64  `bun:"id"`
+	ID       int64  `bun:"id,pk,autoincrement"`
 	UserID   int64  `bun:"user_id"`
 	Number   string `bun:"number"`
 	Balance  int64  `bun:"balance"`
 	Currency string `bun:"currency"`
 	Status   string `bun:"status"`
 
-	Cards    []Card    `bun:"has-many,join:id=account_id"`
-	Payments []Payment `bun:"has-many,join:id=account_id"`
-	Requests []Request `bun:"has-many,join:id=account_id"`
+	Cards    []Card    `bun:"rel:has-many,join:id=account_id"`
+	Payments []Payment `bun:"rel:has-many,join:id=account_id"`
+	Requests []Request `bun:"rel:has-many,join:id=account_id"`
 
 	User *User `bun:"rel:belongs-to,join:user_id=id"`
 }

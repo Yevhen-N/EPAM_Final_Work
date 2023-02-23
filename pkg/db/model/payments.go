@@ -15,7 +15,7 @@ const (
 type Payment struct {
 	bun.BaseModel `bun:"table:payments,alias:p"`
 
-	ID        int64     `bun:"id"`
+	ID        int64     `bun:"id,pk,autoincrement"`
 	AccountID int64     `bun:"account_id"`
 	Date      time.Time `bun:"date"`
 	Sum       int64     `bun:"sum"`

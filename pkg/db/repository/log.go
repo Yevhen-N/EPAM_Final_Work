@@ -32,6 +32,7 @@ func (r *LogPostgresRepository) ListByUserID(ctx context.Context, userID int64) 
 	rows := []model.Log{}
 	err := r.db.NewSelect().
 		Model(&rows).
+		Relation("User").
 		Where("user_id=?", userID).
 		Scan(ctx)
 	if err != nil {

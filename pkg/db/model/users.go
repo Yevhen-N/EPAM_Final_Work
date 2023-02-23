@@ -16,7 +16,7 @@ const (
 type User struct {
 	bun.BaseModel `bun:"table:users,alias:u"`
 
-	ID       int64  `bun:"id"`
+	ID       int64  `bun:"id,pk,autoincrement"`
 	FullName string `bun:"full_name"`
 	Email    string `bun:"email"`
 	Password string `bun:"password"`

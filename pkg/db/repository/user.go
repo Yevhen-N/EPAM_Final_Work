@@ -20,7 +20,7 @@ func NewUserPostgresRepository(db bun.IDB) *UserPostgresRepository {
 func (r *UserPostgresRepository) Create(ctx context.Context, row *model.User) error {
 	_, err := r.db.NewInsert().
 		Model(row).
-		Returning("*").
+		Returning("*").ExcludeColumn("status").ExcludeColumn("role").
 		Exec(ctx, row)
 	if err != nil {
 		return fmt.Errorf("repo create user: %w", err)
@@ -38,7 +38,7 @@ func (r *UserPostgresRepository) Get(ctx context.Context, id int64) (*model.User
 		Relation("Accounts.Requests").
 		Relation("Logs").
 		Where("u.id = ?", id).
-		Scan(ctx, row)
+		Scan(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("repo get user: %w", err)
 	}
