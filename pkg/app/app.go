@@ -7,10 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/repository"
-
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/uptrace/bun"
+
+	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/repository"
 )
 
 // App represents main application
@@ -41,17 +42,22 @@ func New(dbConn bun.IDB) (*App, error) {
 		logPostgresRepository:      logPostgresRepository,
 		srv:                        echo.New(),
 	}
+
+	app.srv.Use(middleware.Logger())
 	// TODO use Middleware
 	v1 := app.srv.Group("v1")
 
 	v1.POST("/users", app.CreateUserHandler)
 	v1.GET("/users/:id", app.GetUserHandler)
 	v1.PUT("/users/lock", app.UserRoleHandler)
+	v1.DELETE("/users/:id", app.DeleteUserHandler)
 
 	v1.POST("/accounts", app.CreateAccountHandler)
+	v1.GET("/accounts/:id", app.GetAccountHandler)
 	v1.GET("/users/:id/accounts", app.ListAccountHandler)
+	v1.PUT("/accounts/:id", app.BlockAccountHandler)
 
-	v1.POST("/card", app.CreateCardHandler)
+	v1.POST("/cards", app.CreateCardHandler)
 	v1.GET("/card/:id", app.GetCardHandler)
 
 	v1.POST("/account/:id/payment", app.CreatePaymentHandler)

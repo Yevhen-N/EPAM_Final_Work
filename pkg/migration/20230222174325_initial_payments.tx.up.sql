@@ -6,7 +6,7 @@ CREATE TABLE users
     id        SERIAL PRIMARY KEY,
     full_name VARCHAR(50)         NOT NULL,
     email     VARCHAR(255) UNIQUE NOT NULL,
-    password  VARCHAR(50)         NOT NULL,
+    password  VARCHAR(250)        NOT NULL,
     status    users_status_type DEFAULT 'active',
     role      users_role_type   DEFAULT 'user'
 
@@ -20,8 +20,8 @@ CREATE TABLE accounts
     id       SERIAL PRIMARY KEY,
     user_id  INTEGER REFERENCES users (id) ON DELETE CASCADE,
     number   VARCHAR(50) UNIQUE NOT NULL,
-    balance  INTEGER            NOT NULL,
-    currency accounts_currency_type DEFAULT 'uah',
+    balance  INTEGER,
+    currency accounts_currency_type DEFAULT 'UAH',
     status   accounts_status_type   DEFAULT 'active'
 
 );

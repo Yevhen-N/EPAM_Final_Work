@@ -17,10 +17,22 @@ func NewUserPostgresRepository(db bun.IDB) *UserPostgresRepository {
 	return &UserPostgresRepository{db: db}
 }
 
+func (r *UserPostgresRepository) Delete(ctx context.Context, id int64) error {
+
+	_, err := r.db.NewDelete().
+		Model(&model.User{}).
+		Where("id=?", id).
+		Exec(ctx)
+	if err != nil {
+		return fmt.Errorf("repo delete user: %w", err)
+	}
+	return nil
+}
+
 func (r *UserPostgresRepository) Create(ctx context.Context, row *model.User) error {
 	_, err := r.db.NewInsert().
 		Model(row).
-		Returning("*").ExcludeColumn("status").ExcludeColumn("role").
+		Returning("*").
 		Exec(ctx, row)
 	if err != nil {
 		return fmt.Errorf("repo create user: %w", err)
@@ -50,6 +62,7 @@ func (r *UserPostgresRepository) Update(ctx context.Context, row *model.User) er
 		Model(row).
 		OmitZero().
 		WherePK().
+		Returning("*").
 		Exec(ctx, row)
 	if err != nil {
 		return fmt.Errorf("repo update user: %w", err)

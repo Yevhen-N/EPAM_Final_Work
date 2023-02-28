@@ -3,8 +3,6 @@ package apiv1
 import (
 	"fmt"
 	"time"
-
-	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/model"
 )
 
 type RequestResponse struct {
@@ -23,12 +21,6 @@ type RequestLockRequest struct {
 func (r *RequestLockRequest) Validate() error {
 	if r.ID == 0 {
 		return fmt.Errorf("id must not be empty")
-	}
-	switch r.Status {
-	case model.RequestStatusNew, model.RequestStatusApproved:
-	// nothing to do
-	default:
-		return fmt.Errorf("unsupported status: %s", r.Status)
 	}
 	return nil
 }

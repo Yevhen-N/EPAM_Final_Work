@@ -48,7 +48,7 @@ func (r *RequestPostgresRepository) UpdateStatus(ctx context.Context, row *model
 		Column("status").
 		OmitZero().
 		WherePK().
-		Exec(ctx, row)
+		Exec(ctx)
 	if err != nil {
 		return fmt.Errorf("repo update request: %w", err)
 	}

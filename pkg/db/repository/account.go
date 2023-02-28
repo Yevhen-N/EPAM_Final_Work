@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/model"
-
 	"github.com/uptrace/bun"
+
+	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/model"
 )
 
 type AccountPostgresRepository struct {
@@ -63,11 +63,21 @@ func (r *AccountPostgresRepository) List(ctx context.Context, userID int64) ([]m
 func (r *AccountPostgresRepository) Update(ctx context.Context, row *model.Account) error {
 	_, err := r.db.NewUpdate().
 		Model(row).
-		Column("balance").
-		Column("status").
-		Where("user_id=?", row).
+		WherePK().
+		Returning("*").
+		Exec(ctx, row)
+	if err != nil {
+		return fmt.Errorf("repo update account: %w", err)
+	}
+	return nil
+}
+
+func (r *AccountPostgresRepository) UpdateStatus(ctx context.Context, row *model.Account) error {
+	_, err := r.db.NewUpdate().
+		Model(row).
 		OmitZero().
 		WherePK().
+		Returning("*").
 		Exec(ctx, row)
 	if err != nil {
 		return fmt.Errorf("repo update account: %w", err)

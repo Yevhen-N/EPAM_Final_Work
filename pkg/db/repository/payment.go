@@ -44,7 +44,7 @@ func (r *PaymentsPostgresRepository) Get(ctx context.Context, id int64) (*model.
 func (r *PaymentsPostgresRepository) List(ctx context.Context, accountID int64) ([]model.Payment, error) {
 	rows := []model.Payment{}
 	err := r.db.NewSelect().
-		Model(rows).
+		Model(&rows).
 		Relation("Account").
 		Where("account_id=?", accountID).
 		Scan(ctx)

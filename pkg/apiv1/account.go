@@ -17,11 +17,31 @@ type AccountResponse struct {
 	Cards    []CardResponse    `json:"cards"`
 	Payments []PaymentResponse `json:"payments"`
 	Requests []RequestResponse `json:"requests"`
+	User     *UserResponse     `json:"user"`
+}
+
+type AccountUpdateRequest struct {
+	ID     int64  `json:"id"`
+	Status string `json:"status" enums:"active, blocked"`
+}
+
+func (a *AccountUpdateRequest) Validate() error {
+	if a.ID == 0 {
+		return fmt.Errorf("empty account id")
+	}
+	switch a.Status {
+	case model.AccountStatusActive, model.AccountStatusBlocked:
+		// nothing to do
+	default:
+		return fmt.Errorf("unsupported status: %s", a.Status)
+	}
+	return nil
 }
 
 type AccountRequest struct {
 	UserID   int64  `json:"user_id"`
-	Currency string `json:"currency" enum:"USD, UAH, EUR"`
+	Balance  int64  `json:"balance"`
+	Currency string `json:"currency" enums:"USD,UAH,EUR"`
 }
 
 func (a *AccountRequest) Validate() error {

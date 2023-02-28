@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/labstack/echo/v4"
+
 	"github.com/Yevhen-N/EPAM_Final_Work/pkg/apiv1"
 	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/model"
-
-	"github.com/labstack/echo/v4"
 )
 
 // CreateRequestHandler creates request for current account
@@ -21,12 +21,18 @@ func (a *App) CreateRequestHandler(c echo.Context) error {
 		return fmt.Errorf("request validate error %w", err)
 	}
 
+	account, err := a.accountPostgresRepository.Get(c.Request().Context(), req.AccountID)
+	if err != nil {
+		return fmt.Errorf("get account: %w", err)
+	}
+	if account.Status == model.AccountStatusActive {
+		return fmt.Errorf("account status not blocked")
+	}
 	row := &model.Request{
-		AccountID: req.AccountID,
+		AccountID: account.ID,
 		Status:    model.RequestStatusNew,
 	}
-
-	err := a.requestPostgresRepository.Create(c.Request().Context(), row)
+	err = a.requestPostgresRepository.Create(c.Request().Context(), row)
 	if err != nil {
 		return fmt.Errorf("create request: %w", err)
 	}
@@ -43,26 +49,34 @@ func (a *App) RequestApprovedHandler(c echo.Context) error {
 	if err != nil {
 		return fmt.Errorf("get id from path: %w", err)
 	}
+
 	req, err := a.requestPostgresRepository.Get(c.Request().Context(), id)
 	if err != nil {
 		return fmt.Errorf("get request: %w", err)
 	}
+
 	if req.Status == model.RequestStatusApproved {
 		return fmt.Errorf("request has status approved")
 	}
-	req.Status = model.RequestStatusApproved
 
+	req.Status = model.RequestStatusApproved
 	err = a.requestPostgresRepository.UpdateStatus(c.Request().Context(), req)
 	if err != nil {
-		return fmt.Errorf("status update: %w", err)
+		return fmt.Errorf("request status update: %w", err)
 	}
-	account := &model.Account{
-		ID:     req.AccountID,
-		Status: model.AccountStatusActive,
-	}
-	err = a.accountPostgresRepository.Update(c.Request().Context(), account)
+
+	account, err := a.accountPostgresRepository.Get(c.Request().Context(), req.AccountID)
 	if err != nil {
-		return fmt.Errorf("status update: %w", err)
+		return fmt.Errorf("account is not found %w", err)
+	}
+
+	if account.Status == model.AccountStatusBlocked {
+		account.Status = model.AccountStatusActive
+
+		err = a.accountPostgresRepository.Update(c.Request().Context(), account)
+		if err != nil {
+			return fmt.Errorf("status update: %w", err)
+		}
 	}
 
 	if err := c.JSON(http.StatusOK, mapRequest(req)); err != nil {

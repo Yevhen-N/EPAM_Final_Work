@@ -17,12 +17,12 @@ const (
 type Account struct {
 	bun.BaseModel `bun:"table:accounts,alias:a"`
 
-	ID       int64  `bun:"id,pk,autoincrement"`
-	UserID   int64  `bun:"user_id"`
-	Number   string `bun:"number"`
-	Balance  int64  `bun:"balance"`
-	Currency string `bun:"currency"`
-	Status   string `bun:"status"`
+	ID       int64  `bun:"id,autoincrement,pk"`
+	UserID   int64  `bun:"user_id,type:integer"`
+	Number   string `bun:"number,type:varchar,unique,notnull"`
+	Balance  int64  `bun:"balance,type:integer"`
+	Currency string `bun:"currency,type:varchar,default:'UAH'"`
+	Status   string `bun:"status,type:varchar,default:'active'"`
 
 	Cards    []Card    `bun:"rel:has-many,join:id=account_id"`
 	Payments []Payment `bun:"rel:has-many,join:id=account_id"`
@@ -36,4 +36,5 @@ type AccountsRepository interface {
 	Get(ctx context.Context, id int64) (*Account, error)
 	List(ctx context.Context, userID int64) ([]Account, error)
 	Update(ctx context.Context, a *Account) error
+	UpdateStatus(ctx context.Context, a *Account) error
 }

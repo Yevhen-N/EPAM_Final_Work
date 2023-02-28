@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/labstack/echo/v4"
+
 	"github.com/Yevhen-N/EPAM_Final_Work/pkg/apiv1"
 	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/model"
-
-	"github.com/labstack/echo/v4"
 )
 
 //CreatePaymentHandler creates payment for current account
@@ -30,10 +30,8 @@ func (a *App) CreatePaymentHandler(c echo.Context) error {
 		return fmt.Errorf("account already blocked")
 	}
 
-	if account.Balance <= 0 {
-		if account.Balance < req.Sum*-1 {
-			return fmt.Errorf("not enough money on account")
-		}
+	if account.Balance < 0 || account.Balance+req.Sum < 0 {
+		return fmt.Errorf("not enough money on account")
 	}
 
 	row := &model.Payment{
@@ -49,13 +47,18 @@ func (a *App) CreatePaymentHandler(c echo.Context) error {
 	}
 
 	if req.Status == model.PaymentStatusSent {
-		row := &model.Account{
-			ID:      account.ID,
-			Balance: account.Balance + req.Sum,
-		}
-		err = a.accountPostgresRepository.Update(c.Request().Context(), row)
+		account.Balance += req.Sum
+
+		err = a.accountPostgresRepository.Update(c.Request().Context(), account)
 		if err != nil {
 			return fmt.Errorf("failed balans update: %w", err)
+		}
+		logger := &model.Log{
+			UserID: account.UserID,
+			Action: fmt.Sprintf("User has transaction: %d m. account: # %s. Account balance: %d m.", row.Sum, account.Number, account.Balance),
+		}
+		if err := a.logPostgresRepository.Create(c.Request().Context(), logger); err != nil {
+			return fmt.Errorf("transaction log not created: %w", err)
 		}
 	}
 

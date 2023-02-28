@@ -1,14 +1,33 @@
 package app
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"net/http"
 
+	"github.com/labstack/echo/v4"
+
 	"github.com/Yevhen-N/EPAM_Final_Work/pkg/apiv1"
 	"github.com/Yevhen-N/EPAM_Final_Work/pkg/db/model"
-
-	"github.com/labstack/echo/v4"
 )
+
+// DeleteUserHandler delete users
+func (a *App) DeleteUserHandler(c echo.Context) error {
+	id, err := getIDFromPath(c)
+	if err != nil {
+		return fmt.Errorf("delete id from path: %w", err)
+	}
+
+	err = a.userPostgresRepository.Delete(c.Request().Context(), id)
+	if err != nil {
+		return fmt.Errorf("delete users: %w", err)
+	}
+
+	if err := c.JSON(http.StatusOK, nil); err != nil {
+		return fmt.Errorf("write json response: %w", err)
+	}
+	return nil
+}
 
 // CreateUserHandler create users
 func (a *App) CreateUserHandler(c echo.Context) error {
@@ -24,7 +43,7 @@ func (a *App) CreateUserHandler(c echo.Context) error {
 	row := &model.User{
 		FullName: req.FullName,
 		Email:    req.Email,
-		Password: req.Password,
+		Password: fmt.Sprintf("%x", sha256.Sum256([]byte(req.Password))),
 	}
 
 	err := a.userPostgresRepository.Create(c.Request().Context(), row)
@@ -34,6 +53,14 @@ func (a *App) CreateUserHandler(c echo.Context) error {
 
 	if err := c.JSON(http.StatusOK, mapUser(row)); err != nil {
 		return fmt.Errorf("write json response: %w", err)
+	}
+	loger := &model.Log{
+		UserID: row.ID,
+		Action: fmt.Sprintf("User created, name: %s, e-mail: %s.", row.FullName, row.Email),
+	}
+
+	if err := a.logPostgresRepository.Create(c.Request().Context(), loger); err != nil {
+		return fmt.Errorf("user create log not created: %w", err)
 	}
 	return nil
 }
@@ -86,7 +113,6 @@ func mapUser(row *model.User) *apiv1.UserResponse {
 		ID:       row.ID,
 		FullName: row.FullName,
 		Email:    row.Email,
-		Password: row.Password,
 		Status:   row.Status,
 		Role:     row.Role,
 	}
